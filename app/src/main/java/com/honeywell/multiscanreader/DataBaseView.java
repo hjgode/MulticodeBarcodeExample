@@ -1,9 +1,8 @@
-package com.honeywell.barcodeexample;
+package com.honeywell.multiscanreader;
 
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -66,24 +65,31 @@ public class DataBaseView extends Activity implements AdapterView.OnItemSelected
         // Another interface callback
     }
 
+    ArrayList<DataModel> dataModels;
+    private static CustomAdapter customAdapter;
     public void showlist()
     {
         long lc = database.getRowCount(MandantCurrent);
         txtNumRows.setText(Long.toString(lc));
         list.clear();
         Cursor cursor = database.showdata(MandantCurrent);
+        dataModels=new ArrayList<>();
         if(cursor.getCount() == 0)
         {
             Toast.makeText(context, "No Data", Toast.LENGTH_SHORT).show();
         }
+
         while(cursor.moveToNext())
         {
-            list.add(cursor.getString(0));
-            list.add(cursor.getString(1));
-            list.add(cursor.getString(2));
+            dataModels.add(new DataModel(cursor.getString(0), cursor.getString(1),cursor.getString(2)));
+//            list.add(cursor.getString(0));
+//            list.add(cursor.getString(1));
+//            list.add(cursor.getString(2));
         }
-        adapter = new ArrayAdapter(context,android.R.layout.simple_list_item_1,list);
-        lv.setAdapter(adapter);
+//        adapter = new ArrayAdapter(context,android.R.layout.simple_list_item_1,list);
+        customAdapter=new CustomAdapter(dataModels, context);
+        lv.setAdapter(customAdapter);
+//        lv.setAdapter(adapter);
     }
 
 

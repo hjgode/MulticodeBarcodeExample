@@ -1,4 +1,4 @@
-package com.honeywell.barcodeexample;
+package com.honeywell.multiscanreader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.content.pm.ActivityInfo;
 
 import com.honeywell.aidc.*;
 

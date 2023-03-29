@@ -1,4 +1,4 @@
-package com.honeywell.barcodeexample;
+package com.honeywell.multiscanreader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -23,13 +25,13 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.pm.ActivityInfo;
 
 import com.honeywell.aidc.*;
 
 public class ClientBarcodeActivity extends Activity implements BarcodeReader.BarcodeListener,
         BarcodeReader.TriggerListener, AdapterView.OnItemSelectedListener {
 
+    AidcManager manager;
     private com.honeywell.aidc.BarcodeReader barcodeReader;
     private ListView barcodeList;
 
@@ -43,6 +45,7 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
     String MandantCurrent="N/A";
 
     int uniqueSerials=0;
+    boolean bTriggerStatusLast=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +59,24 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
-        // get bar code instance from MainActivity
-        barcodeReader = MainActivity.getBarcodeObject();
+        // create the AidcManager providing a Context and a
+        // CreatedCallback implementation.
+        AidcManager.create(this, new AidcManager.CreatedCallback() {
+
+            @Override
+            public void onCreated(AidcManager aidcManager) {
+                manager = aidcManager;
+                try{
+                    barcodeReader = manager.createBarcodeReader();
+                }
+                catch (InvalidScannerNameException e){
+                    Toast.makeText(context, "Invalid Scanner Name Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                catch (Exception e){
+                    Toast.makeText(context, "Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         if (barcodeReader != null) {
 
@@ -142,11 +161,45 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
                 database.exportCSV();
                 break;
             case R.id.clear_data:
-                database.clearData();
+                showDialog("Delete data", "Wirklich alle Daten löschen?");
+
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    boolean showDialog(String title, String question){
+        final boolean[] bRet = {false};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(title);
+        builder.setMessage(question);
+
+        builder.setPositiveButton("JA", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                // Do nothing but close the dialog
+                bRet[0] =true;
+                database.clearData();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("NEIN", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                bRet[0]=false;
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+        return bRet[0];
+    }
+
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
         // An item was selected. You can retrieve the selected item using
@@ -266,15 +319,22 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "datenbank anzahl: " + Long.toString(database.getDataCount()));
-        database.close();
         if (barcodeReader != null) {
-                startstopScan(false);
+            startstopScan(false);
             // unregister barcode event listener
-            barcodeReader.removeBarcodeListener(this);
-
+            barcodeReader.removeBarcodeListener(this);            // close BarcodeReader to clean up resources.
             // unregister trigger state change listener
             barcodeReader.removeTriggerListener(this);
+            barcodeReader.close();
+            barcodeReader = null;
         }
+
+        if (manager != null) {
+            // close AidcManager to disconnect from the scanner service.
+            // once closed, the object can no longer be used.
+            manager.close();
+        }
+        Log.d(TAG, "datenbank anzahl: " + Long.toString(database.getDataCount()));
+        database.close();
     }
 }

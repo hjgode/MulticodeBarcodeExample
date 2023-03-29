@@ -1,6 +1,6 @@
-package com.honeywell.barcodeexample;
+package com.honeywell.multiscanreader;
 
-import static com.honeywell.barcodeexample.ClientBarcodeActivity.TAG;
+import static com.honeywell.multiscanreader.ClientBarcodeActivity.TAG;
 
 import android.content.ContentValues;
 import android.content.Context;

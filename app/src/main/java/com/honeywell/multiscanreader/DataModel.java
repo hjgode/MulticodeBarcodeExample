@@ -1,4 +1,4 @@
-package com.honeywell.barcodeexample;
+package com.honeywell.multiscanreader;
 
 public class DataModel {
 

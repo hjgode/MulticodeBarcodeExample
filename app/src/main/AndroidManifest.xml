@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.honeywell.barcodeexample"
+    package="com.honeywell.multiscanreader"
     android:versionCode="197000073"
     android:versionName="1.97.00.0073">
 
@@ -16,24 +16,23 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.honeywell.barcodeexample.DataBaseView"
+            android:name="com.honeywell.multiscanreader.DataBaseView"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name="com.honeywell.barcodeexample.MainActivity"
+            android:name="com.honeywell.multiscanreader.ClientBarcodeActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.honeywell.barcodeexample.AutomaticBarcodeActivity"
+            android:name="com.honeywell.multiscanreader.AutomaticBarcodeActivity"
             android:exported="true"
             android:label="@string/barcode">
             <intent-filter>
@@ -43,17 +42,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.honeywell.barcodeexample.ClientBarcodeActivity"
+            android:name="com.honeywell.multiscanreader.MainActivity"
             android:exported="true"
             android:label="@string/barcode">
             <intent-filter>
                 <action android:name="android.intent.action.CLIENTBARCODEACTIVITY" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+
             </intent-filter>
         </activity>
         <activity
-            android:name="com.honeywell.barcodeexample.ScannerSelectionBarcodeActivity"
+            android:name="com.honeywell.multiscanreader.ScannerSelectionBarcodeActivity"
             android:exported="true"
             android:label="@string/barcode">
             <intent-filter>

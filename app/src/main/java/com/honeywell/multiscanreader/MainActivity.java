@@ -1,4 +1,4 @@
-package com.honeywell.barcodeexample;
+package com.honeywell.multiscanreader;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import android.content.pm.ActivityInfo;
 
 import com.honeywell.aidc.AidcManager;
 import com.honeywell.aidc.AidcManager.CreatedCallback;

@@ -1,4 +1,4 @@
-package com.honeywell.barcodeexample;
+package com.honeywell.multiscanreader;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
