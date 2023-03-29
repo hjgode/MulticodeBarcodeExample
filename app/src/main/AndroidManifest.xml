@@ -31,37 +31,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.honeywell.multiscanreader.AutomaticBarcodeActivity"
-            android:exported="true"
-            android:label="@string/barcode">
-            <intent-filter>
-                <action android:name="android.intent.action.AUTOMATICBARCODEACTIVITY" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.honeywell.multiscanreader.MainActivity"
-            android:exported="true"
-            android:label="@string/barcode">
-            <intent-filter>
-                <action android:name="android.intent.action.CLIENTBARCODEACTIVITY" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.honeywell.multiscanreader.ScannerSelectionBarcodeActivity"
-            android:exported="true"
-            android:label="@string/barcode">
-            <intent-filter>
-                <action android:name="android.intent.action.SCANNERSELECTBARCODEACTIVITY" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

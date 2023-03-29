@@ -45,6 +45,8 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
     String MandantCurrent="N/A";
 
     int uniqueSerials=0;
+    int uniqueSerialsSession=0;
+
     boolean bTriggerStatusLast=false;
 
     @Override
@@ -133,15 +135,14 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        Button btnExport=(Button) findViewById(R.id.btnExport);
-        btnExport.setOnClickListener(new View.OnClickListener() {
+        Button btnResetCount=(Button) findViewById(R.id.btnResetCount);
+        btnResetCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                database.getDataCount();
-                database.exportCSV();
-                database.exportDB();
+                uniqueSerials=0;
             }
         });
+
     }
 
     @Override
@@ -225,6 +226,7 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
                     List<String> list = new ArrayList<String>();
                     list.add("SKIPPED ADDING: " + data);
                     list.add("Anzahl: " + Integer.toString(uniqueSerials));
+                    list.add("Anzahl/Session: " + Integer.toString(uniqueSerialsSession));
                     final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
                             ClientBarcodeActivity.this, android.R.layout.simple_list_item_1, list);
 
@@ -234,10 +236,11 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
                     database.writeData(data, MandantCurrent);
                     Log.d(TAG, "Added new data:" + data);
                     uniqueSerials++;
-
+                    uniqueSerialsSession++;
                     List<String> list = new ArrayList<String>();
                     list.add("Barcode data: " + event.getBarcodeData());
                     list.add("Anzahl: " + Integer.toString(uniqueSerials));
+                    list.add("Anzahl/Session: " + Integer.toString(uniqueSerialsSession));
 
                     final ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
                             ClientBarcodeActivity.this, android.R.layout.simple_list_item_1, list);
@@ -258,9 +261,19 @@ public class ClientBarcodeActivity extends Activity implements BarcodeReader.Bar
     // onTriggerEvent function
     @Override
     public void onTriggerEvent(TriggerStateChangeEvent event) {
-        bScanContinuous=event.getState();
-        startstopScan(event.getState());
-
+        boolean bState=event.getState();
+        if(bState != bTriggerStatusLast){
+            if(bTriggerStatusLast==false){
+                //now on
+                bScanContinuous=true;
+                uniqueSerialsSession=0;
+            }else{
+                //now off
+                bScanContinuous=false;
+            }
+            bTriggerStatusLast=bState;
+        }
+        startstopScan(bState);
     }
 
     void startstopScan(boolean start){
